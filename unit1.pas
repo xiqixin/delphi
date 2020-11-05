@@ -31,7 +31,7 @@ var
 implementation
 
 {$R *.dfm}
-//ÔËËã·ûÓÅÏÈ¼¶
+//è¿ç®—ç¬¦ä¼˜å…ˆçº§
 function priority( s: string):Integer;
 begin
   if s = '+'then
@@ -110,7 +110,7 @@ begin
         lvstr2Bak := lvstr2Bak + Estr[i]
       end;
     end;
-    {Óöµ½×óÀ¨ºÅ´¦ÀíÇé¿ö}
+    {é‡åˆ°å·¦æ‹¬å·å¤„ç†æƒ…å†µ}
     if Estr[i] = '(' then
     begin
       lvBoStart := True;
@@ -169,9 +169,9 @@ var
   lvstr2 :string;
 begin
   Estr := Trim(astr);
-    {Estr½ÓÊÕÊäÈëµÄ×Ö·û´®}
+    {Estræ¥æ”¶è¾“å…¥çš„å­—ç¬¦ä¸²}
 
-  {±éÀú×Ö·û´®È¡³öÊı×ÖºÍÔËËã·û}
+  {éå†å­—ç¬¦ä¸²å–å‡ºæ•°å­—å’Œè¿ç®—ç¬¦}
   SetLength(array1,255);
   SetLength(array2,255);
   SetLength(tmpArray,255);
@@ -180,15 +180,15 @@ begin
   begin
     tmpArray[I] := '-1';
   end;
-  {½«Edit½ÓÊÕµ½µÄ×Ö·û´®´æÈëtmpArray}
+  {å°†Editæ¥æ”¶åˆ°çš„å­—ç¬¦ä¸²å­˜å…¥tmpArray}
   for I := 1 to Length(Estr) do
   begin
     tmpArray[I-1] :=  Estr[I];
   end;
-  {ÀûÓÃArray1±£´æÖĞ×º±í´ïÊ½}
-  J := 0; //array1µÄÏÂ±ê
-  K := 0; //array2µÄÏÂ±ê
-  M := 0; //¼ÇÂ¼ÒÑ¾­Ìí¼Ó¹ıµÄÊı×Ö
+  {åˆ©ç”¨Array1ä¿å­˜ä¸­ç¼€è¡¨è¾¾å¼}
+  J := 0; //array1çš„ä¸‹æ ‡
+  K := 0; //array2çš„ä¸‹æ ‡
+  M := 0; //è®°å½•å·²ç»æ·»åŠ è¿‡çš„æ•°å­—
 
   for I := 0 to 255 do
   begin
@@ -203,7 +203,7 @@ begin
       end
       else if M>I then
       begin
-        continue; //Á¬ĞøÊı×ÖÒÑ¾­¼ÓÈëµ½array1[J],ËùÒÔÖ±½ÓÌø¹ı
+        continue; //è¿ç»­æ•°å­—å·²ç»åŠ å…¥åˆ°array1[J],æ‰€ä»¥ç›´æ¥è·³è¿‡
       end;
       array1[J] := tmpArray[I];
       M := I+1;
@@ -228,7 +228,7 @@ begin
     end
     else
     begin
-      Memo1.Lines.Add('ÇëÊäÈëÕıÈ·µÄ±í´ïÊ½£¡£¡');
+      Memo1.Lines.Add('è¯·è¾“å…¥æ­£ç¡®çš„è¡¨è¾¾å¼ï¼ï¼');
       exit;
     end;
   end;
@@ -245,14 +245,14 @@ begin
   stack := TStack.Create();
 
 
-  {Array1±£´æÖĞ×º±í´ïÊ½£¬Array2±£´æºó×º±í´ïÊ½,ÖĞ×º×ªºó×º}
+  {Array1ä¿å­˜ä¸­ç¼€è¡¨è¾¾å¼ï¼ŒArray2ä¿å­˜åç¼€è¡¨è¾¾å¼,ä¸­ç¼€è½¬åç¼€}
   for I := 0 to 255 do
   begin
     if isOperator(Array1[I]) then
     begin
       if J = 0 then
       begin
-        Memo1.Lines.Add('ÇëÊäÈëÕıÈ·µÄ±í´ïÊ½£¡£¡');
+        Memo1.Lines.Add('è¯·è¾“å…¥æ­£ç¡®çš„è¡¨è¾¾å¼ï¼ï¼');
         exit;
       end;
       if stack.count = 0 then
@@ -262,7 +262,7 @@ begin
       else
       begin
         Elm := string(stack.peek());
-        Memo1.Lines.Add('µ±Ç°Õ»¶¥ÔªËØ' + Elm);
+        Memo1.Lines.Add('å½“å‰æ ˆé¡¶å…ƒç´ ' + Elm);
         while ((stack.count) <> 0) and
           (priority(Elm) >= priority(Array1[I])) do
         begin
@@ -272,14 +272,14 @@ begin
         end;
         stack.push(Pointer(Array1[I]));
         Elm := string(stack.peek());
-        Memo1.Lines.Add('²Ù×÷·ûÈëÕ»' + Elm);
+        Memo1.Lines.Add('æ“ä½œç¬¦å…¥æ ˆ' + Elm);
       end
     end
     else if Array1[I] = '('then
     begin
       stack.Push(Pointer(Array1[I]));
       //Elm := string(stack.peek());
-      Memo1.Lines.Add('µ±Ç°Õ»¶¥ÔªËØ' + Elm);
+      Memo1.Lines.Add('å½“å‰æ ˆé¡¶å…ƒç´ ' + Elm);
     end
     else if Array1[I] = ')'then
     begin
@@ -289,7 +289,7 @@ begin
           //Elm := string(stack.peek());
 
           Elm := string(stack.pop());
-          Memo1.Lines.Add(')³öÏÖÊ±µ±Ç°Õ»¶¥ÔªËØ' + Elm);
+          Memo1.Lines.Add(')å‡ºç°æ—¶å½“å‰æ ˆé¡¶å…ƒç´ ' + Elm);
           Array2[J] := Elm;
           Inc(J);
           //stack.Pop;
@@ -316,7 +316,7 @@ begin
 
   end;
 
-  Memo1.Lines.Add('stack count: '+IntToStr(stack.count));//ÏÔÊ¾Õ»ÖĞÔªËØ¸öÊı£¨Ó¦¸ÃÎª0£©
+  Memo1.Lines.Add('stack count: '+IntToStr(stack.count));//æ˜¾ç¤ºæ ˆä¸­å…ƒç´ ä¸ªæ•°ï¼ˆåº”è¯¥ä¸º0ï¼‰
   stack.Free;
   for I := 0 to 255 do
   begin
@@ -324,16 +324,16 @@ begin
     begin
       Break;
     end;
-    Memo1.Lines.Add('ºó×º±í´ïÊ½£º'+Array2[I]);
+    Memo1.Lines.Add('åç¼€è¡¨è¾¾å¼ï¼š'+Array2[I]);
   end;
-  //°ÑRstarray³õÊ¼»¯ÎªÈ«0
+  //æŠŠRstarrayåˆå§‹åŒ–ä¸ºå…¨0
   for I := 0 to 31 do
   begin
     Rstarray[I] := 0;
   end;
 
-  //ºó×º±í´ïÊ½µÄ¼ÆËã,Array2ÖĞ±£´æµÄÊÇºó×º±í´ïÊ½
-  //ÓÃRstarray±£´æÔËËã½á¹û
+  //åç¼€è¡¨è¾¾å¼çš„è®¡ç®—,Array2ä¸­ä¿å­˜çš„æ˜¯åç¼€è¡¨è¾¾å¼
+  //ç”¨Rstarrayä¿å­˜è¿ç®—ç»“æœ
   J := 0;//Rsta
 
   tmpResult := 0;
@@ -343,7 +343,7 @@ begin
     begin
        if High(Rstarray) = Low(Rstarray) then
        begin
-         Memo1.Lines.Add('ºó×º±í´ïÊ½´íÎó');
+         Memo1.Lines.Add('åç¼€è¡¨è¾¾å¼é”™è¯¯');
          Exit;
        end
        else
@@ -363,7 +363,7 @@ begin
              J := J - 1;
              if (J = 0) and (Array2[I+1] = '')then
              begin
-               Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+               Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
                Result := Rstarray[0];
                Exit;
              end
@@ -385,7 +385,7 @@ begin
              J := J-1;
              if (J = 0) and (Array2[I+1] = '')then
              begin
-               Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+               Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
                Result := Rstarray[0];
                Exit;
              end
@@ -407,7 +407,7 @@ begin
              J := J-1;
              if (J = 0) and (Array2[I+1] = '')then
              begin
-               Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+               Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
                Result := Rstarray[0];
                Exit;
              end
@@ -429,7 +429,7 @@ begin
              J := J-1;
              if (J = 0) and (Array2[I+1] = '')then
              begin
-               Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+               Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
                Result := Rstarray[0];
                Exit;
              end
@@ -443,10 +443,10 @@ begin
     end
     else
     begin
-      //ÕâÀïArray2[I]±íÊ¾ÊÇÊı×Ö
+      //è¿™é‡ŒArray2[I]è¡¨ç¤ºæ˜¯æ•°å­—
       if J = -1 then
       begin
-        Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+        Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
         Result := Rstarray[0];
         Exit;
       end
@@ -474,10 +474,10 @@ var
   tmpArray:array of string;
   num1,num2,tmpResult:Double;
 begin
-  {Estr½ÓÊÕÊäÈëµÄ×Ö·û´®}
+  {Estræ¥æ”¶è¾“å…¥çš„å­—ç¬¦ä¸²}
   Estr := Edit1.Text;
-  Memo1.Lines.Add(Estr+' µÄÔËËã½á¹ûÊÇ£º ');
-  {±éÀú×Ö·û´®È¡³öÊı×ÖºÍÔËËã·û}
+  Memo1.Lines.Add(Estr+' çš„è¿ç®—ç»“æœæ˜¯ï¼š ');
+  {éå†å­—ç¬¦ä¸²å–å‡ºæ•°å­—å’Œè¿ç®—ç¬¦}
   SetLength(array1,32);
   SetLength(array2,32);
   SetLength(tmpArray,64);
@@ -486,15 +486,15 @@ begin
   begin
     tmpArray[I] := '-1';
   end;
-  {½«Edit½ÓÊÕµ½µÄ×Ö·û´®´æÈëtmpArray}
+  {å°†Editæ¥æ”¶åˆ°çš„å­—ç¬¦ä¸²å­˜å…¥tmpArray}
   for I := 1 to Length(Estr) do
   begin
     tmpArray[I-1] :=  Estr[I];
   end;
-  {ÀûÓÃArray1±£´æÖĞ×º±í´ïÊ½}
-  J := 0; //array1µÄÏÂ±ê
-  K := 0; //array2µÄÏÂ±ê
-  M := 0; //¼ÇÂ¼ÒÑ¾­Ìí¼Ó¹ıµÄÊı×Ö
+  {åˆ©ç”¨Array1ä¿å­˜ä¸­ç¼€è¡¨è¾¾å¼}
+  J := 0; //array1çš„ä¸‹æ ‡
+  K := 0; //array2çš„ä¸‹æ ‡
+  M := 0; //è®°å½•å·²ç»æ·»åŠ è¿‡çš„æ•°å­—
 
   for I := 0 to 63 do
   begin
@@ -509,7 +509,7 @@ begin
       end
       else if M>I then
       begin
-        continue; //Á¬ĞøÊı×ÖÒÑ¾­¼ÓÈëµ½array1[J],ËùÒÔÖ±½ÓÌø¹ı
+        continue; //è¿ç»­æ•°å­—å·²ç»åŠ å…¥åˆ°array1[J],æ‰€ä»¥ç›´æ¥è·³è¿‡
       end;
       array1[J] := tmpArray[I];
       M := I+1;
@@ -534,7 +534,7 @@ begin
     end
     else
     begin
-      Memo1.Lines.Add('ÇëÊäÈëÕıÈ·µÄ±í´ïÊ½£¡£¡');
+      Memo1.Lines.Add('è¯·è¾“å…¥æ­£ç¡®çš„è¡¨è¾¾å¼ï¼ï¼');
       exit;
     end;
   end;
@@ -551,14 +551,14 @@ begin
   stack := TStack.Create();
 
 
-  {Array1±£´æÖĞ×º±í´ïÊ½£¬Array2±£´æºó×º±í´ïÊ½,ÖĞ×º×ªºó×º}
+  {Array1ä¿å­˜ä¸­ç¼€è¡¨è¾¾å¼ï¼ŒArray2ä¿å­˜åç¼€è¡¨è¾¾å¼,ä¸­ç¼€è½¬åç¼€}
   for I := 0 to 31 do
   begin
     if isOperator(Array1[I]) then
     begin
       if J = 0 then
       begin
-        Memo1.Lines.Add('ÇëÊäÈëÕıÈ·µÄ±í´ïÊ½£¡£¡');
+        Memo1.Lines.Add('è¯·è¾“å…¥æ­£ç¡®çš„è¡¨è¾¾å¼ï¼ï¼');
         exit;
       end;
       if stack.count = 0 then
@@ -614,24 +614,24 @@ begin
 
   end;
 
-  Memo1.Lines.Add('stack count: '+IntToStr(stack.count));//ÏÔÊ¾Õ»ÖĞÔªËØ¸öÊı£¨Ó¦¸ÃÎª0£©
+  Memo1.Lines.Add('stack count: '+IntToStr(stack.count));//æ˜¾ç¤ºæ ˆä¸­å…ƒç´ ä¸ªæ•°ï¼ˆåº”è¯¥ä¸º0ï¼‰
   for I := 0 to 31 do
   begin
     if (Array2[I] = '') then
     begin
       Break;
     end;
-    Memo1.Lines.Add('ºó×º±í´ïÊ½£º'+Array2[I]);
+    Memo1.Lines.Add('åç¼€è¡¨è¾¾å¼ï¼š'+Array2[I]);
   end;
-  //°ÑRstarray³õÊ¼»¯ÎªÈ«0
+  //æŠŠRstarrayåˆå§‹åŒ–ä¸ºå…¨0
   for I := 0 to 31 do
   begin
     Rstarray[I] := 0;
   end;
 
-  //ºó×º±í´ïÊ½µÄ¼ÆËã,Array2ÖĞ±£´æµÄÊÇºó×º±í´ïÊ½
-  //ÓÃRstarray±£´æÔËËã½á¹û
-  J := 0;//RstarrayµÄÏÂ±ê
+  //åç¼€è¡¨è¾¾å¼çš„è®¡ç®—,Array2ä¸­ä¿å­˜çš„æ˜¯åç¼€è¡¨è¾¾å¼
+  //ç”¨Rstarrayä¿å­˜è¿ç®—ç»“æœ
+  J := 0;//Rstarrayçš„ä¸‹æ ‡
   m := 0;
   tmpResult := 0;
   for I := 0 to 31 do
@@ -640,7 +640,7 @@ begin
     begin
        if High(Rstarray) = Low(Rstarray) then
        begin
-         Memo1.Lines.Add('ºó×º±í´ïÊ½´íÎó');
+         Memo1.Lines.Add('åç¼€è¡¨è¾¾å¼é”™è¯¯');
          Exit;
        end
        else
@@ -660,7 +660,7 @@ begin
              J := J - 1;
              if (J = 0) and (Array2[I+1] = '')then
              begin
-               Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+               Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
                Exit;
              end
              else
@@ -681,7 +681,7 @@ begin
              J := J-1;
              if (J = 0) and (Array2[I+1] = '')then
              begin
-               Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+               Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
                Exit;
              end
              else
@@ -702,7 +702,7 @@ begin
              J := J-1;
              if (J = 0) and (Array2[I+1] = '')then
              begin
-               Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+               Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
                Exit;
              end
              else
@@ -723,7 +723,7 @@ begin
              J := J-1;
              if (J = 0) and (Array2[I+1] = '')then
              begin
-               Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+               Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
                Exit;
              end
              else
@@ -736,10 +736,10 @@ begin
     end
     else
     begin
-      //ÕâÀïArray2[I]±íÊ¾ÊÇÊı×Ö
+      //è¿™é‡ŒArray2[I]è¡¨ç¤ºæ˜¯æ•°å­—
       if J = -1 then
       begin
-        Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+        Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
         Exit;
       end
       else
@@ -750,7 +750,7 @@ begin
     end;
   end;
 
-  Memo1.Lines.Add('¼ÆËã½á¹û£º'+ FloatToStr(Rstarray[0]));
+  Memo1.Lines.Add('è®¡ç®—ç»“æœï¼š'+ FloatToStr(Rstarray[0]));
 end;
 
 end.
