@@ -132,7 +132,7 @@ begin
         lvstr2Bak := lvstr2Bak +lvstr;
         if rStr <>'' then
             lvstr2Bak := lvstr2Bak + rStr;
-
+            
         lvstr := '';
         //rStr := '';
       end;
