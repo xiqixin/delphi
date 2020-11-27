@@ -14,9 +14,7 @@ TRTLCriticalSection包含一个计数器、一个指示当前线程句柄的域�
 
 procedure EnterCriticalSection(var lpCriticalSection: TRTLCriticalSection); stdcall;
 
-procedure LeaveCriticalSection(var lpCriticalSection:TRTLCriticalSection);
-
-stdcall;
+procedure LeaveCriticalSection(var lpCriticalSection:TRTLCriticalSection);stdcall;
 
 正如你所想的，参数lpCriticalSection就是由InitializeCriticalSection()填充的记录。
 
@@ -24,7 +22,7 @@ stdcall;
 
 procedure DeleteCriticalSection(var lpCriticalSection:TRTLCriticalSection);stdcall
 
-看看u2m(UpToMe)的例子:
+看看例子:
 
 在第一个线程调用了EnterCriticalSection()之后，所有别的线程就不能再进入代码块。下一个线程要等第一个线程调用LeaveCriticalSection()后才能被唤醒。
 
