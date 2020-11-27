@@ -1,0 +1,191 @@
+临界区是一种最直接的线程同步方式。所谓临界区，就是一次只能由一个线程来执行的一段代码。如果把初始化数组的代码放在临界区内，
+另一个线程在第一个线程处理完之前是不会被执行的。在使用临界区之前，必须使用InitializeCriticalSection()过程来初始化它。
+其声明如下：
+
+procedure InitializeCriticalSection(var lpCriticalSection: TRTLCriticalSection); stdcall;
+
+lpCriticalSection参数是一个TRTLCriticalSection类型的记录，并且是变参。至于TRTLCriticalSection是如何定义的，这并不重
+要，因为很少需要查看这个记录中的具体内容。只需要在lpCriticalSection中传递未初始化的记录，InitializeCriticalSection()过程就会填充这个记录。
+
+注意Microsoft故意隐瞒了TRTLCriticalSection的细节。因为，其内容在不同的硬件平台上是不同的。在基于Intel的平台上，
+TRTLCriticalSection包含一个计数器、一个指示当前线程句柄的域和一个系统事件的句柄。在Alpha平台上，计数器被替换为一种Alpha-CPU 数据结构，称为spinlock。
+
+在记录被填充后，我们就可以开始创建临界区了。这时我们需要用EnterCriticalSection()和LeaveCriticalSection()来封装代码块。这两个过程的声明如下：
+
+procedure EnterCriticalSection(var lpCriticalSection: TRTLCriticalSection); stdcall;
+
+procedure LeaveCriticalSection(var lpCriticalSection:TRTLCriticalSection);
+
+stdcall;
+
+正如你所想的，参数lpCriticalSection就是由InitializeCriticalSection()填充的记录。
+
+当你不需要TRTLCriticalSection记录时，应当调用DeleteCriticalSection()过程，下面是它的声明：
+
+procedure DeleteCriticalSection(var lpCriticalSection:TRTLCriticalSection);stdcall
+
+看看u2m(UpToMe)的例子:
+
+在第一个线程调用了EnterCriticalSection()之后，所有别的线程就不能再进入代码块。下一个线程要等第一个线程调用LeaveCriticalSection()后才能被唤醒。
+
+当有多个线程的时候，经常需要去同步这些线程以访问同一个数据或资源。例如，假设有一个程
+
+序，其中一个线程用于把文件读到内存，而另一个线程用于统计文件中的字符数。当然，在把整个文
+
+件调入内存之前，统计它的计数是没有意义的。但是，由于每个操作都有自己的线程，操作系统会把
+
+两个线程当作是互不相干的任务分别执行，这样就可能在没有把整个文件装入内存时统计字数。为解
+
+决此问题，你必须使两个线程同步工作。
+
+存在一些线程同步地址的问题，Win32提供了许多线程同步的方式。在本节你将看到使用临界区、
+
+互斥、信号量和事件来解决线程同步的问题。
+
+1. 临界区
+
+临界区是一种最直接的线程同步方式。所谓临界区，就是一次只能由
+
+一个线程来执行的一段代码。如果把初始化数组的代码放在临界区内，另
+
+一个线程在第一个线程处理完之前是不会被执行的。
+
+在使用临界区之前，必须使用InitializeCriticalSection()过程来初始化它。
+
+其声明如下：
+
+procedure InitializeCriticalSection(var lpCriticalSection:
+
+TRLCriticalSection);stdcall;
+
+lpCriticalSection参数是一个TRTLCriticalSection类型的记录，并且是变参。至于TRTLCriticalSection
+
+是如何定义的，这并不重要，因为很少需要查看这个记录中的具体内容。只需要在lpCriticalSection中传
+
+递未初始化的记录，InitializeCriticalSection()过程就会填充这个记录。
+
+注意Microsoft故意隐瞒了TRTLCriticalSection的细节。因为，其内容在不同的硬件平台上是
+
+不同的。在基于Intel的平台上，TRTLCriticalSection包含一个计数器、一个指示当前线程句柄
+
+的域和一个系统事件的句柄。在Alpha平台上，计数器被替换为一种Alpha-CPU 数据结构，称
+
+为spinlock。在记录被填充后，我们就可以开始创建临界区了。这时我们需要用EnterCriticalSection()和
+
+LeaveCriticalSection()来封装代码块。这两个过程的声明如下：
+
+procedure EnterCriticalSection(var lpCriticalSection:TRRLCriticalSection);stdcall;
+
+procedure LeaveCriticalSection(var lpCriticalSection:TRRLCriticalSection);stdcall;
+
+正如你所想的，参数lpCriticalSection就是由InitializeCriticalSection()填充的记录。
+
+当你不需要TRTLCriticalSection记录时，应当调用DeleteCriticalSection()过程，下面是它的声明：
+
+procedure DeleteCriticalSection(var lpCriticalSection: TRTLCriticalSection); stdcall;
+
+2. 互斥
+
+互斥非常类似于临界区，除了两个关键的区别：首先，互斥可用于跨
+
+进程的线程同步。其次，互斥能被赋予一个字符串名字，并且通过引用此
+
+名字创建现有互斥对象的附加句柄。
+
+提示临界区与事件对象(比如互斥对象)的最大的区别是在性能上。临
+
+界区在没有线程冲突时，要用1 0 ~ 1 5个时间片，而事件对象由于涉及到
+
+系统内核要用400~600个时间片。
+
+可以调用函数CreateMutex ( )来创建一个互斥量。下面是函数的声明：
+
+function CreateMutext(lpMutextAtrribes:PSecurityAttributtes;
+
+bInitalOwner:BOOL; lpName:PChar):THandle; stdcall;
+
+lpMutexAttributes参数为一个指向TSecurityAttributtes记录的指针。此参数通常设为0，表示默认的
+
+安全属性。bInitalOwner参数表示创建互斥对象的线程是否要成为此互斥对象的拥有者。当此参数为False时，
+
+表示互斥对象没有拥有者。
+
+lpName参数指定互斥对象的名称。设为nil表示无命名，如果参数不是设为nil，函数会搜索是否有
+
+同名的互斥对象存在。如果有，函数就会返回同名互斥对象的句柄。否则，就新创建一个互斥对象并
+
+返回其句柄。
+
+当使用完互斥对象时，应当调用CloseHandle()来关闭它。
+
+在程序中使用WaitForSingleObject()来防止其他线程进入同步区域的代码。此函数声
+
+明如下：
+
+function WaitForSingleObject(hHandle: THandle; dwMilliseconds: DWORD): DWORD; stdcall;
+
+这个函数可以使当前线程在dwMilliseconds指定的时间内睡眠，直到hHandle参数指定的对象进入
+
+发信号状态为止。一个互斥对象不再被线程拥有时，它就进入发信号状态。当一个进程要终止时，它
+
+就进入发信号状态。dwMilliseconds参数可以设为0，这意味着只检查hHandle参数指定的对象是否处于
+
+发信号状态，而后立即返回。dwMilliseconds参数设为INFINITE，表示如果信号不出现将一直等下去。
+
+这个函数的返回值如下
+
+WaitFor SingleObject()函数使用的返回值
+
+返回值 含义
+
+WAIT_ABANDONED 指定的对象是互斥对象，并且拥有这个互斥对象的线程在没有释放此对象之
+
+前就已终止。此时就称互斥对象被抛弃。这种情况下，这个互斥对象归当前线
+
+程所有，并把它设为非发信号状态
+
+WAIT_OBJECT_0 指定的对象处于发信号状态
+
+WAIT_TIMEOUT等待的时间已过，对象仍然是非发信号状态
+
+再次声明，当一个互斥对象不再被一个线程所拥有,它就处于发信号状态。此时首先调用WaitForSingleObject()函数
+
+的线程就成为该互斥对象的拥有者，此互斥对象设为不发信号状态。当线程调用
+
+ReleaseMutex()函数并传递一个互斥对象的句柄作为参数时，这种拥有关系就被解除，互斥对象重新
+
+进入发信号状态。
+
+注意除WaitForSingleObject()函数外，你还可以使用WaitForMultipleObject()和MsgWaitForMultipleObject()函数，
+
+它们可以等待几个对象变为发信号状态。这两个函数的详细情况请看
+
+Win32 API联机文档。
+
+3. 信号量
+
+另一种使线程同步的技术是使用信号量对象。它是在互斥的基础上建立的，但信号量增加了资源
+
+计数的功能，预定数目的线程允许同时进入要同步的代码。可以用CreateSemaphore()来创建一个信号
+
+量对象，其声明如下：
+
+function CreateSemaphore(lpSemaphoreAttributes: PSecurityAttributes;
+
+lInitialCount, lMaximumCount: Longint; lpName: PChar): THandle; stdcall;
+
+和CreateMutex()函数一样，CreateSemaphore()的第一个参数也是一个指向TSecurityAttribute s记录
+
+的指针，此参数的缺省值可以设为nil。
+
+lInitialCount参数用来指定一个信号量的初始计数值，这个值必须在0和lMaximumCount之间。此
+
+参数大于0，就表示信号量处于发信号状态。当调用WaitForSingleObject()函数(或其他函数)时，此计
+
+数值就减1。当调用ReleaseSemaphore()时，此计数值加1。
+
+参数lMaximumCount指定计数值的最大值。如果这个信号量代表某种资源，那么这个值代表可用
+
+资源总数。
+
+参数lpName用于给出信号量对象的名称，它类似于CreateMutex()函数的lpName参数。
